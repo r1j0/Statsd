@@ -3,6 +3,7 @@ package com.github.r1j0.statsd.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
+import java.util.Random;
 
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -19,11 +20,15 @@ public class StatsdClient {
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		for (int i = 0; i < 100; i++) {
-			new Automatic().run();
+		while (true) {
+			for (int i = 0; i < 5; i++) {
+				new Automatic().start();
+			}
+			
+			Thread.sleep(1000);
 		}
 
-		System.exit(0);
+//		System.exit(0);
 	}
 
 
@@ -34,6 +39,7 @@ public class StatsdClient {
 		}
 
 
+		@Override
 		public void run() {
 			IoConnector connector = new NioDatagramConnector();
 			connector.getSessionConfig().setReadBufferSize(2048);
@@ -41,7 +47,7 @@ public class StatsdClient {
 			connector.getFilterChain().addLast("logger", new LoggingFilter());
 			connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
-			connector.setHandler(new StatsdClientHandler(" Hello Server.. äöüß"));
+			connector.setHandler(new StatsdClientHandler("bucket:value|type@sample RAND: " + new Random().nextInt()));
 			ConnectFuture future = connector.connect(new InetSocketAddress(HOST, PORT));
 
 			if (!future.isConnected()) {
