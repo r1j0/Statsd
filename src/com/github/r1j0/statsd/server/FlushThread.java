@@ -1,22 +1,28 @@
 package com.github.r1j0.statsd.server;
 
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.r1j0.statsd.backend.Backend;
+
 public class FlushThread extends Thread {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final int FLUSH_INTERVALL = 5000;
+	private final int flushIntervall;
+	private final List<Backend> backends;
 	private final LinkedBlockingQueue<String> queue;
 
 
-	public FlushThread(LinkedBlockingQueue<String> linkedBlockingQueue) {
+	public FlushThread(StatsdConfiguration configuration, LinkedBlockingQueue<String> linkedBlockingQueue) {
 		super();
 
 		queue = linkedBlockingQueue;
+		flushIntervall = configuration.getFlushIntervall();
+		backends = configuration.getBackends();
 	}
 
 
@@ -35,10 +41,15 @@ public class FlushThread extends Thread {
 
 			while ((message = queue.poll()) != null) {
 				logger.info("Message taken from the queue: " + message);
+				
+				for (Backend backend : backends) {
+					backend.send(message);
+					logger.info("Message send to backend: " + backend.getName());
+				}
 			}
 
 			try {
-				Thread.sleep(FLUSH_INTERVALL);
+				Thread.sleep(flushIntervall);
 			} catch (InterruptedException e) {
 				// Sleeping time is over, go back to work
 			}

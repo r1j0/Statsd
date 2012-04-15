@@ -1,1 +1,15 @@
-listen.port=39390
+server.debug = false
+server.listen_port=39390
+
+# flush intervall in milliseconds
+server.flush_intervall=5000
+
+backend.use = mysql, graphite
+
+backend.mysql.host = 192.168.1.10
+backend.mysql.port = 3128
+backend.mysql.user = root
+backend.mysql.password = none
+
+backend.graphite.host = 192.168.1.10
+backend.graphite.port = 12345

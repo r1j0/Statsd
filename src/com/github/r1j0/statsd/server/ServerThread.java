@@ -18,12 +18,14 @@ public class ServerThread extends Thread {
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	private static final int PORT = 39390;
+	private final int port;
 	private final LinkedBlockingQueue<String> linkedBlockingQueue;
 
 
-	public ServerThread(LinkedBlockingQueue<String> linkedBlockingQueue) {
+	public ServerThread(StatsdConfiguration configuration, LinkedBlockingQueue<String> linkedBlockingQueue) {
 		this.linkedBlockingQueue = linkedBlockingQueue;
+
+		port = configuration.getListeningPort();
 	}
 
 
@@ -45,8 +47,8 @@ public class ServerThread extends Thread {
 		logger.info("Starting server...");
 
 		try {
-			acceptor.bind(new InetSocketAddress(PORT));
-			logger.info("Listening on port: " + PORT);
+			acceptor.bind(new InetSocketAddress(port));
+			logger.info("Listening on port: " + port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
