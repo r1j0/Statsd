@@ -12,6 +12,7 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.PosixParser;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +107,7 @@ public class StatsdConfiguration {
 
 		for (String backendToUse : backendsToUse) {
 			try {
-				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + backendToUse.trim()).newInstance();
+				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendToUse.trim().toLowerCase()) + "Backend").newInstance();
 				backends.add(backend);
 
 				logger.info("Added backend: " + backend.getClass().getSimpleName() + ".");
