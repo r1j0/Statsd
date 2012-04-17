@@ -20,6 +20,11 @@ import com.github.r1j0.statsd.backend.Backend;
 
 public class StatsdConfiguration {
 
+	private static final String SERVER_DEBUG = "server.debug";
+	private static final String SERVER_LISTEN_PORT = "server.listen_port";
+	private static final String SERVER_FLUSH_INTERVALL = "server.flush_intervall";
+	private static final String BACKEND_USE = "backend.use";
+
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 	private Options options;
@@ -49,17 +54,17 @@ public class StatsdConfiguration {
 
 
 	public boolean isDebugEnabled() {
-		return Boolean.parseBoolean(getValue("server.debug"));
+		return Boolean.parseBoolean(getValue(SERVER_DEBUG));
 	}
 
 
 	public int getListeningPort() {
-		return Integer.parseInt(getValue("server.listen_port"));
+		return Integer.parseInt(getValue(SERVER_LISTEN_PORT));
 	}
 
 
 	public int getFlushIntervall() {
-		return Integer.parseInt(getValue("server.flush_intervall"));
+		return Integer.parseInt(getValue(SERVER_FLUSH_INTERVALL));
 	}
 
 
@@ -92,17 +97,22 @@ public class StatsdConfiguration {
 		}
 
 		if (line.hasOption("debug")) {
-			properties.setProperty("server.debug", line.getOptionValue("debug"));
+			properties.setProperty(SERVER_DEBUG, line.getOptionValue("debug"));
 		}
 
 		if (line.hasOption("p")) {
-			properties.setProperty("server.listen_port", line.getOptionValue("p"));
+			properties.setProperty(SERVER_LISTEN_PORT, line.getOptionValue("p"));
 		}
 
-		String[] backendsToUse = properties.getProperty("backend.use").split(",");
+		initializeBackends();
+	}
+
+
+	private void initializeBackends() {
+		String[] backendsToUse = properties.getProperty(BACKEND_USE).split(",");
 
 		if (isDebugEnabled()) {
-			backendsToUse = new String[] { "DebugBackend" };
+			backendsToUse = new String[] { "debug" };
 		}
 
 		for (String backendToUse : backendsToUse) {
