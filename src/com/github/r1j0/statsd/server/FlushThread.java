@@ -1,5 +1,7 @@
 package com.github.r1j0.statsd.server;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -7,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.backend.Backend;
+import com.github.r1j0.statsd.utils.ThreadUtility;
+
 
 public class FlushThread extends Thread {
 
@@ -28,9 +32,12 @@ public class FlushThread extends Thread {
 
 	@Override
 	public void run() {
-		logger.info("WorkerThread started.");
+		logger.info("FlushThread started.");
+		List<String> messages = new ArrayList<String>();
 
 		while (true) {
+			messages.clear();
+
 			if (!queue.isEmpty()) {
 				logger.info("Queue size is: " + queue.size());
 			} else {
@@ -41,18 +48,17 @@ public class FlushThread extends Thread {
 
 			while ((message = queue.poll()) != null) {
 				logger.info("Message taken from the queue: " + message);
-				
-				for (Backend backend : backends) {
-					backend.send(message);
-					logger.info("Message send to backend: " + backend.getName());
-				}
+				messages.add(message);
 			}
 
-			try {
-				Thread.sleep(flushIntervall);
-			} catch (InterruptedException e) {
-				// Sleeping time is over, go back to work
+			List<String> unmodifieableMessages = Collections.unmodifiableList(messages);
+
+			for (Backend backend : backends) {
+				logger.info("Message send to backend: " + backend.getClass().getSimpleName());
+				backend.send(unmodifieableMessages);
 			}
+
+			ThreadUtility.doSleep(flushIntervall);
 		}
 	}
 }

@@ -1,9 +1,9 @@
 package com.github.r1j0.statsd.backend;
 
+import java.util.List;
+
 public interface Backend {
 
-	String getName();
-
-	boolean send(String message);
+	boolean send(List<String> messages);
 
 }

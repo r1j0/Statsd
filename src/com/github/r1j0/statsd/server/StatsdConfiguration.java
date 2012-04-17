@@ -109,7 +109,7 @@ public class StatsdConfiguration {
 				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + backendToUse.trim()).newInstance();
 				backends.add(backend);
 
-				logger.info("Added backend: " + backend.getName() + ".");
+				logger.info("Added backend: " + backend.getClass().getSimpleName() + ".");
 			} catch (Exception e) {
 				e.printStackTrace();
 				logger.error(e.getMessage());
