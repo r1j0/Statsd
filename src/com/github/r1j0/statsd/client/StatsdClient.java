@@ -21,11 +21,11 @@ public class StatsdClient {
 
 	public static void main(String[] args) throws IOException, InterruptedException {
 		while (true) {
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 5; i++) {
 				new Automatic().start();
 			}
 
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		}
 
 		// System.exit(0);

@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface Backend {
 
-	boolean send(List<String> messages);
+	boolean notify(List<String> messages);
 
 }

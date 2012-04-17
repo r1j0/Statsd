@@ -11,8 +11,8 @@ public class DebugBackend implements Backend {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-	public boolean send(List<String> messages) {
-		logger.info("Received messages: " + messages.toString());
+	public boolean notify(List<String> messages) {
+		logger.info(getClass().getSimpleName() + " received messages: " + messages.toString());
 		return true;
 	}
 }
