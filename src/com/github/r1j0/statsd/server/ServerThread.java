@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 public class ServerThread extends Thread {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final int port;
 	private final LinkedBlockingQueue<String> linkedBlockingQueue;
@@ -31,7 +31,7 @@ public class ServerThread extends Thread {
 
 	@Override
 	public void run() {
-		logger.info("ServerThread started.");
+		log.info("ServerThread started.");
 
 		NioDatagramAcceptor acceptor = new NioDatagramAcceptor();
 		acceptor.setHandler(new StatsdServerHandler(linkedBlockingQueue));
@@ -44,11 +44,11 @@ public class ServerThread extends Thread {
 		acceptor.getSessionConfig().setReadBufferSize(2048);
 		acceptor.getSessionConfig().setIdleTime(IdleStatus.BOTH_IDLE, 5);
 
-		logger.info("Starting server...");
+		log.info("Starting server...");
 
 		try {
 			acceptor.bind(new InetSocketAddress(port));
-			logger.info("Listening on port: " + port);
+			log.info("Listening on port: " + port);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

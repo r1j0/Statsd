@@ -25,7 +25,7 @@ public class StatsdConfiguration {
 	private static final String SERVER_FLUSH_INTERVALL = "server.flush_intervall";
 	private static final String BACKEND_USE = "backend.use";
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private Options options;
 	private Properties properties = new Properties();
@@ -80,7 +80,7 @@ public class StatsdConfiguration {
 		}
 
 		if (line.hasOption("version")) {
-			logger.info("Version is and will be infinite.");
+			log.info("Version is and will be infinite.");
 			System.exit(0);
 		}
 
@@ -89,10 +89,10 @@ public class StatsdConfiguration {
 		try {
 			properties.load(new FileInputStream(propertiesFile));
 		} catch (FileNotFoundException e) {
-			logger.error("File not found: " + propertiesFile);
+			log.error("File not found: " + propertiesFile);
 			System.exit(1);
 		} catch (IOException e) {
-			logger.error("Unable to read file: " + propertiesFile);
+			log.error("Unable to read file: " + propertiesFile);
 			System.exit(1);
 		}
 
@@ -120,10 +120,10 @@ public class StatsdConfiguration {
 				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendToUse.trim().toLowerCase()) + "Backend").newInstance();
 				backends.add(backend);
 
-				logger.info("Added backend: " + backend.getClass().getSimpleName() + ".");
+				log.info("Added backend: " + backend.getClass().getSimpleName() + ".");
 			} catch (Exception e) {
 				e.printStackTrace();
-				logger.error(e.getMessage());
+				log.error(e.getMessage());
 			}
 		}
 	}

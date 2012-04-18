@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class StatsdClientHandler extends IoHandlerAdapter {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final String values;
 	private boolean finished;
 
@@ -31,8 +31,8 @@ public class StatsdClientHandler extends IoHandlerAdapter {
 
 	@Override
 	public void messageReceived(IoSession session, Object message) {
-		logger.info("Message received in the client..");
-		logger.info("Message is: " + message.toString());
+		log.info("Message received in the client..");
+		log.info("Message is: " + message.toString());
 	}
 
 

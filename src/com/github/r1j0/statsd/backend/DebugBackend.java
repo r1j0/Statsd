@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 public class DebugBackend implements Backend {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 
 	public boolean notify(List<String> messages) {

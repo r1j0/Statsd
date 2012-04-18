@@ -16,7 +16,7 @@ import com.github.r1j0.statsd.utils.ThreadUtility;
 
 public class FlushThread extends Thread {
 
-	private final Logger logger = LoggerFactory.getLogger(getClass());
+	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final LinkedBlockingQueue<String> queue;
 	private final List<Backend> backends;
@@ -34,7 +34,7 @@ public class FlushThread extends Thread {
 
 	@Override
 	public void run() {
-		logger.info("FlushThread started.");
+		log.info("FlushThread started.");
 		List<String> messages = new ArrayList<String>();
 		final int backendsSize = backends.size();
 
@@ -45,7 +45,7 @@ public class FlushThread extends Thread {
 			String message = "";
 
 			while ((message = queue.poll()) != null) {
-				logger.info("Message taken from the queue: " + message);
+				log.info("Message taken from the queue: " + message);
 				messages.add(message);
 			}
 
@@ -54,7 +54,7 @@ public class FlushThread extends Thread {
 				final ExecutorService executor = Executors.newFixedThreadPool(backendsSize);
 
 				for (Backend backend : backends) {
-					logger.info("Notifying backend: " + backend.getClass().getSimpleName());
+					log.info("Notifying backend: " + backend.getClass().getSimpleName());
 
 					final Runnable backendWorker = new BackendWorker(backend, unmodifiableMessages);
 					executor.execute(backendWorker);
@@ -66,7 +66,7 @@ public class FlushThread extends Thread {
 
 				}
 
-				logger.info("Finished backend threads");
+				log.info("Finished backend threads");
 			}
 
 			ThreadUtility.doSleep(flushIntervall);
@@ -76,9 +76,9 @@ public class FlushThread extends Thread {
 
 	private void queueInformation() {
 		if (!queue.isEmpty()) {
-			logger.info("Queue size is: " + queue.size());
+			log.info("Queue size is: " + queue.size());
 		} else {
-			logger.info("Queue is empty");
+			log.info("Queue is empty");
 		}
 	}
 }
