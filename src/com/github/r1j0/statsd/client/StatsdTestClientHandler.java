@@ -6,14 +6,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class StatsdClientHandler extends IoHandlerAdapter {
+public class StatsdTestClientHandler extends IoHandlerAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final String values;
 	private boolean finished;
 
 
-	public StatsdClientHandler(String values) {
+	public StatsdTestClientHandler(String values) {
 		this.values = values;
 	}
 

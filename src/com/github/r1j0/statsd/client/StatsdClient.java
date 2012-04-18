@@ -2,62 +2,57 @@ package com.github.r1j0.statsd.client;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.charset.Charset;
-import java.util.Random;
+import java.nio.ByteBuffer;
+import java.nio.channels.DatagramChannel;
 
-import org.apache.mina.core.future.ConnectFuture;
-import org.apache.mina.core.service.IoConnector;
-import org.apache.mina.core.session.IoSession;
-import org.apache.mina.filter.codec.ProtocolCodecFilter;
-import org.apache.mina.filter.codec.textline.TextLineCodecFactory;
-import org.apache.mina.filter.logging.LoggingFilter;
-import org.apache.mina.transport.socket.nio.NioDatagramConnector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class StatsdClient {
 
-	private static final String HOST = "127.0.0.1";
-	private static final int PORT = 39390;
+	private final Logger log = LoggerFactory.getLogger(getClass());
+
+	private final String host;
+	private final int port;
 
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		while (true) {
-			for (int i = 0; i < 5; i++) {
-				new Automatic().start();
-			}
-
-			Thread.sleep(2000);
-		}
-
-		// System.exit(0);
+	public StatsdClient(String host, int port) {
+		this.host = host;
+		this.port = port;
 	}
 
 
-	public static class Automatic extends Thread {
+	/**
+	 * bucket:value|type@sample RAND
+	 */
+	public boolean send(final String bucket, final String value, final String type, final String sample, final String random) {
+		final DatagramChannel channel;
 
-		public Automatic() {
-			super();
-		}
+		try {
+			channel = DatagramChannel.open();
+			channel.connect(new InetSocketAddress(host, port));
 
+			final StringBuilder stringBuilder = new StringBuilder();
+			stringBuilder.append(bucket).append(":").append(value).append("|").append(type).append("@").append(sample).append(" ").append(random).append("\n");
+			final String message = stringBuilder.toString();
 
-		@Override
-		public void run() {
-			IoConnector connector = new NioDatagramConnector();
-			connector.getSessionConfig().setReadBufferSize(2048);
+			final byte[] messageBytes = message.getBytes("utf-8");
+			final int messageLength = messageBytes.length;
 
-			connector.getFilterChain().addLast("logger", new LoggingFilter());
-			connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
+			final ByteBuffer buffer = ByteBuffer.wrap(messageBytes);
+			final int bytesWritten = channel.write(buffer);
 
-			connector.setHandler(new StatsdClientHandler("bucket:value|type@sample RAND: " + new Random().nextInt()));
-			ConnectFuture future = connector.connect(new InetSocketAddress(HOST, PORT));
-
-			if (!future.isConnected()) {
-				return;
+			if (bytesWritten == messageLength) {
+				log.info("Bytes written: " + messageLength + " Message: " + message);
+			} else {
+				log.warn("Bytes written: " + bytesWritten + " but message had: " + messageLength + " bytes.");
 			}
 
-			IoSession session = future.getSession();
-			session.getConfig().setUseReadOperation(true);
-			session.close(true);
-			connector.dispose();
+			channel.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+		return true;
 	}
 }

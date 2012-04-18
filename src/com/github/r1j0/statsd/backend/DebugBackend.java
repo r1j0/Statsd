@@ -12,7 +12,7 @@ public class DebugBackend implements Backend {
 
 
 	public boolean notify(List<String> messages) {
-		logger.info(getClass().getSimpleName() + " received messages: " + messages.toString());
+		log.info(getClass().getSimpleName() + " received messages: " + messages.toString());
 		return true;
 	}
 }
