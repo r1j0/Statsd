@@ -1,8 +1,8 @@
 server.debug = false
 server.listen_port=39390
 
-# flush intervall in milliseconds
-server.flush_intervall=5000
+# flush interval in milliseconds
+server.flush_interval=5000
 
 backend.use = mysql, graphite
 

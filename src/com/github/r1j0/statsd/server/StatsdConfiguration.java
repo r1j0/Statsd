@@ -22,7 +22,7 @@ public class StatsdConfiguration {
 
 	private static final String SERVER_DEBUG = "server.debug";
 	private static final String SERVER_LISTEN_PORT = "server.listen_port";
-	private static final String SERVER_FLUSH_INTERVALL = "server.flush_intervall";
+	private static final String SERVER_FLUSH_INTERVAL = "server.flush_interval";
 	private static final String BACKEND_USE = "backend.use";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -63,8 +63,8 @@ public class StatsdConfiguration {
 	}
 
 
-	public int getFlushIntervall() {
-		return Integer.parseInt(getValue(SERVER_FLUSH_INTERVALL));
+	public int getFlushInterval() {
+		return Integer.parseInt(getValue(SERVER_FLUSH_INTERVAL));
 	}
 
 

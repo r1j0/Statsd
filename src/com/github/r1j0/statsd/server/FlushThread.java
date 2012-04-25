@@ -20,7 +20,7 @@ public class FlushThread extends Thread {
 
 	private final LinkedBlockingQueue<String> queue;
 	private final List<Backend> backends;
-	private final int flushIntervall;
+	private final int flushInterval;
 
 
 	public FlushThread(StatsdConfiguration configuration, LinkedBlockingQueue<String> linkedBlockingQueue) {
@@ -28,7 +28,7 @@ public class FlushThread extends Thread {
 
 		queue = linkedBlockingQueue;
 		backends = configuration.getBackends();
-		flushIntervall = configuration.getFlushIntervall();
+		flushInterval = configuration.getFlushInterval();
 	}
 
 
@@ -69,7 +69,7 @@ public class FlushThread extends Thread {
 				log.info("Finished backend threads");
 			}
 
-			ThreadUtility.doSleep(flushIntervall);
+			ThreadUtility.doSleep(flushInterval);
 		}
 	}
 
