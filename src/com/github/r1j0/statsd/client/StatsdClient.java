@@ -12,6 +12,10 @@ public class StatsdClient {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	private static final String KEY_SEPARATOR = ":";
+	private static final String VALUE_SEPARATOR = "|";
+	private static final String LINE_ENDING = "\n";
+
 	private final String host;
 	private final int port;
 
@@ -22,19 +26,55 @@ public class StatsdClient {
 	}
 
 
-	/**
-	 * bucket:value|type@sample RAND
-	 */
-	public boolean send(final String bucket, final String value, final String type, final String sample, final String random) {
+	public boolean increment(final String key) {
+		return increment(key, 1, 1.0);
+	}
+
+
+	public boolean increment(final String key, final int value) {
+		return increment(key, value, 1.0);
+	}
+
+
+	public boolean increment(final String key, final int value, final double unixTimestamp) {
+		return createMessage(key, value, unixTimestamp);
+	}
+
+
+	public boolean decrement(final String key) {
+		return decrement(key, -1, 1.0);
+	}
+
+
+	public boolean decrement(final String key, final int value) {
+		return decrement(key, value, 1.0);
+	}
+
+
+	public boolean decrement(final String key, final int value, final double unixTimestamp) {
+		int negativeValue = value;
+
+		if (value > 0) {
+			negativeValue = -value;
+		}
+
+		return createMessage(key, negativeValue, unixTimestamp);
+	}
+
+
+	private boolean createMessage(final String key, final int value, final double unixTimestamp) {
+		final StringBuilder message = new StringBuilder();
+		message.append(key).append(KEY_SEPARATOR).append(value).append(VALUE_SEPARATOR).append(unixTimestamp).append(LINE_ENDING);
+		return send(message.toString());
+	}
+
+
+	public boolean send(final String message) {
 		final DatagramChannel channel;
 
 		try {
 			channel = DatagramChannel.open();
 			channel.connect(new InetSocketAddress(host, port));
-
-			final StringBuilder stringBuilder = new StringBuilder();
-			stringBuilder.append(bucket).append(":").append(value).append("|").append(type).append("@").append(sample).append(" ").append(random).append("\n");
-			final String message = stringBuilder.toString();
 
 			final byte[] messageBytes = message.getBytes("utf-8");
 			final int messageLength = messageBytes.length;

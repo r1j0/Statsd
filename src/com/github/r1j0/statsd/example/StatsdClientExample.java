@@ -6,7 +6,11 @@ public class StatsdClientExample {
 
 	public static void main(String[] args) {
 		StatsdClient statsdClient = new StatsdClient("127.0.0.1", 39390);
-		statsdClient.send("bucket", "value", "type", "sample", "random");
-	}
+		statsdClient.increment("my.bucket.test", 1);
+		statsdClient.increment("my.bucket.test", 1);
+		statsdClient.increment("my.bucket.test", 1);
 
+		statsdClient.decrement("my.bucket.test", 1);
+		statsdClient.decrement("my.bucket.test", 5);
+	}
 }
