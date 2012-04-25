@@ -63,7 +63,7 @@ public class FlushThread extends Thread {
 				executor.shutdown();
 
 				while (!executor.isTerminated()) {
-
+					// No op
 				}
 
 				log.info("Finished backend threads");
