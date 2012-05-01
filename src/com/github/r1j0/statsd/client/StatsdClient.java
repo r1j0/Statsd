@@ -30,45 +30,50 @@ public class StatsdClient {
 
 
 	public boolean increment(final String key) {
-		return increment(key, 1, 1.0);
+		return increment(key, 1, getTimeStamp());
 	}
 
 
 	public boolean increment(final String key, final int value) {
-		return increment(key, value, 1.0);
+		return increment(key, value, getTimeStamp());
 	}
 
 
-	public boolean increment(final String key, final int value, final double unixTimestamp) {
-		return createMessage(key, value, unixTimestamp);
+	public boolean increment(final String key, final int value, final long timestamp) {
+		return createMessage(key, value, timestamp);
 	}
 
 
 	public boolean decrement(final String key) {
-		return decrement(key, -1, 1.0);
+		return decrement(key, -1, getTimeStamp());
 	}
 
 
 	public boolean decrement(final String key, final int value) {
-		return decrement(key, value, 1.0);
+		return decrement(key, value, getTimeStamp());
 	}
 
 
-	public boolean decrement(final String key, final int value, final double unixTimestamp) {
+	public boolean decrement(final String key, final int value, final long timestamp) {
 		int negativeValue = value;
 
 		if (value > 0) {
 			negativeValue = -value;
 		}
 
-		return createMessage(key, negativeValue, unixTimestamp);
+		return createMessage(key, negativeValue, timestamp);
 	}
 
 
-	private boolean createMessage(final String key, final int value, final double unixTimestamp) {
+	private boolean createMessage(final String key, final int value, final long timestamp) {
 		final StringBuilder message = new StringBuilder();
-		message.append(key).append(KEY_SEPARATOR).append(value).append(VALUE_SEPARATOR).append(unixTimestamp).append(LINE_ENDING);
+		message.append(key).append(KEY_SEPARATOR).append(value).append(VALUE_SEPARATOR).append(timestamp).append(LINE_ENDING);
 		return send(message.toString());
+	}
+
+
+	private long getTimeStamp() {
+		return System.currentTimeMillis() / 1000L;
 	}
 
 
