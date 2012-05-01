@@ -1,7 +1,10 @@
 package com.github.r1j0.statsd.client;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.DatagramChannel;
 
@@ -70,6 +73,23 @@ public class StatsdClient {
 
 
 	public boolean send(final String message) {
+		try {
+			Socket socket = new Socket(host, port);
+			Writer writer = new OutputStreamWriter(socket.getOutputStream());
+			writer.write(message);
+			writer.flush();
+			writer.close();
+			socket.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+
+		return true;
+	}
+
+
+	public boolean sendUdp(final String message) {
 		final DatagramChannel channel;
 
 		try {
@@ -87,6 +107,8 @@ public class StatsdClient {
 			} else {
 				log.warn("Bytes written: " + bytesWritten + " but message had: " + messageLength + " bytes.");
 			}
+
+			log.debug("MESSAGE:" + message);
 
 			channel.close();
 		} catch (IOException e) {

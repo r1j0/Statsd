@@ -3,7 +3,6 @@ package com.github.r1j0.statsd.client;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
-import java.util.Random;
 
 import org.apache.mina.core.future.ConnectFuture;
 import org.apache.mina.core.service.IoConnector;
@@ -15,14 +14,19 @@ import org.apache.mina.transport.socket.nio.NioDatagramConnector;
 
 public class StatsdTestClient {
 
-	private static final String HOST = "127.0.0.1";
-	private static final int PORT = 39390;
+	private static final String HOST = "192.168.1.21";
+	private static final int PORT = 2003;
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
+		StatsdClient statsdClient = new StatsdClient("192.168.1.21", 2003);
+
 		while (true) {
-			for (int i = 0; i < 5; i++) {
-				new Automatic().start();
+			String message = "system.loadavg_1min 0.60 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_5min 0.80 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_15min 0.50 " + System.currentTimeMillis() / 1000L + "\n";
+
+			for (int i = 0; i < 1; i++) {
+				statsdClient.send(message);
+//				new Automatic().start();
 			}
 
 			Thread.sleep(2000);
@@ -47,7 +51,12 @@ public class StatsdTestClient {
 			connector.getFilterChain().addLast("logger", new LoggingFilter());
 			connector.getFilterChain().addLast("codec", new ProtocolCodecFilter(new TextLineCodecFactory(Charset.forName("UTF-8"))));
 
-			connector.setHandler(new StatsdTestClientHandler("bucket:value|type@sample RAND: " + new Random().nextInt()));
+			String message = "\nsystem.loadavg_1min 0.60 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_5min 0.80 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_15min 0.50 " + System.currentTimeMillis() / 1000L + "\n\n";
+			System.out.println("MESSAGE:" + message);
+			connector.setHandler(new StatsdTestClientHandler(message));
+			// connector.setHandler(new
+			// StatsdTestClientHandler("bucket:value|type@sample RAND: " + new
+			// Random().nextInt()));
 			ConnectFuture future = connector.connect(new InetSocketAddress(HOST, PORT));
 
 			if (!future.isConnected()) {
