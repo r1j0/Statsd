@@ -118,6 +118,7 @@ public class StatsdConfiguration {
 		for (String backendToUse : backendsToUse) {
 			try {
 				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendToUse.trim().toLowerCase()) + "Backend").newInstance();
+				backend.setConfiguration(this);
 				backends.add(backend);
 
 				log.info("Added backend: " + backend.getClass().getSimpleName() + ".");
