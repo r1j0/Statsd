@@ -41,7 +41,6 @@ public class GraphiteBackend implements Backend {
 
 	private boolean doSend(final String message) {
 		try {
-			log.debug(configuration.getValue("backend.graphite.host") + " " + Integer.parseInt(configuration.getValue("backend.graphite.port")));
 			Socket socket = new Socket(configuration.getValue("backend.graphite.host"), Integer.parseInt(configuration.getValue("backend.graphite.port")));
 			Writer writer = new OutputStreamWriter(socket.getOutputStream());
 			writer.write(message);
