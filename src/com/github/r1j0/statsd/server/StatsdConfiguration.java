@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.backend.Backend;
+import com.github.r1j0.statsd.backend.BackendConfiguration;
 
 public class StatsdConfiguration {
 
@@ -118,7 +119,8 @@ public class StatsdConfiguration {
 		for (String backendToUse : backendsToUse) {
 			try {
 				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendToUse.trim().toLowerCase()) + "Backend").newInstance();
-				backend.setConfiguration(this);
+				BackendConfiguration configuration = backend.getConfiguration();
+				configuration.setConfiguration(this);
 				backends.add(backend);
 
 				log.info("Added backend: " + backend.getClass().getSimpleName() + ".");

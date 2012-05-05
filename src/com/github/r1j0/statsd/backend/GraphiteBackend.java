@@ -8,12 +8,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.r1j0.statsd.server.StatsdConfiguration;
-
 public class GraphiteBackend implements Backend {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-	private StatsdConfiguration configuration;
+	private final GraphiteBackendConfiguration configuration;
+
+
+	public GraphiteBackend() {
+		this.configuration = new GraphiteBackendConfiguration();
+	}
 
 
 	public boolean notify(List<String> messages) {
@@ -23,8 +26,8 @@ public class GraphiteBackend implements Backend {
 	}
 
 
-	public void setConfiguration(StatsdConfiguration statsdConfiguration) {
-		this.configuration = statsdConfiguration;
+	public BackendConfiguration getConfiguration() {
+		return configuration;
 	}
 
 
@@ -41,7 +44,7 @@ public class GraphiteBackend implements Backend {
 
 	private boolean doSend(final String message) {
 		try {
-			Socket socket = new Socket(configuration.getValue("backend.graphite.host"), Integer.parseInt(configuration.getValue("backend.graphite.port")));
+			Socket socket = new Socket(configuration.getHost(), configuration.getPort());
 			Writer writer = new OutputStreamWriter(socket.getOutputStream());
 			writer.write(message);
 			writer.flush();

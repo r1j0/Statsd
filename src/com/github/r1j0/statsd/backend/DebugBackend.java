@@ -5,11 +5,15 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.r1j0.statsd.server.StatsdConfiguration;
-
 public class DebugBackend implements Backend {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final DebugBackendConfiguration configuration;
+
+
+	public DebugBackend() {
+		this.configuration = new DebugBackendConfiguration();
+	}
 
 
 	public boolean notify(List<String> messages) {
@@ -18,7 +22,7 @@ public class DebugBackend implements Backend {
 	}
 
 
-	public void setConfiguration(StatsdConfiguration configuration) {
-		// NoOp
+	public DebugBackendConfiguration getConfiguration() {
+		return configuration;
 	}
 }
