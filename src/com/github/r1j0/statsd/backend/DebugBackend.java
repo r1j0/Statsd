@@ -5,7 +5,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.github.r1j0.statsd.configuration.DebugBackendConfiguration;
+import com.github.r1j0.statsd.backend.configuration.DebugBackendConfiguration;
 
 public class DebugBackend implements Backend {
 
