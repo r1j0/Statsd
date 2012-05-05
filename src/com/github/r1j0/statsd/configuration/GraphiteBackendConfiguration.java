@@ -1,6 +1,6 @@
-package com.github.r1j0.statsd.backend;
+package com.github.r1j0.statsd.configuration;
 
-import com.github.r1j0.statsd.server.StatsdConfiguration;
+import com.github.r1j0.statsd.backend.BackendConfiguration;
 
 public class GraphiteBackendConfiguration implements BackendConfiguration {
 

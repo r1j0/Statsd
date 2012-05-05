@@ -1,4 +1,4 @@
-package com.github.r1j0.statsd.server;
+package com.github.r1j0.statsd.configuration;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.backend.Backend;
 import com.github.r1j0.statsd.backend.BackendConfiguration;
+import com.github.r1j0.statsd.server.OptionsBuilder;
+import com.github.r1j0.statsd.server.StatsdServer;
 
 public class StatsdConfiguration {
 

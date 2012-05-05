@@ -1,6 +1,6 @@
 package com.github.r1j0.statsd.backend;
 
-import com.github.r1j0.statsd.server.StatsdConfiguration;
+import com.github.r1j0.statsd.configuration.StatsdConfiguration;
 
 public interface BackendConfiguration {
 

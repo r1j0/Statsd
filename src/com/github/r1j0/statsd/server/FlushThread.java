@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.backend.Backend;
 import com.github.r1j0.statsd.backend.BackendWorker;
+import com.github.r1j0.statsd.configuration.StatsdConfiguration;
 import com.github.r1j0.statsd.utils.ThreadUtility;
 
 public class FlushThread extends Thread {

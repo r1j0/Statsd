@@ -14,6 +14,8 @@ import org.apache.mina.transport.socket.nio.NioDatagramAcceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.github.r1j0.statsd.configuration.StatsdConfiguration;
+
 public class ServerThread extends Thread {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
