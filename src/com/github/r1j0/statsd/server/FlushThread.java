@@ -37,6 +37,7 @@ public class FlushThread extends Thread {
 		log.info("FlushThread started.");
 		List<String> messages = new ArrayList<String>();
 		final int backendsSize = backends.size();
+		final ExecutorService executor = Executors.newFixedThreadPool(backendsSize);
 
 		while (true) {
 			messages.clear();
@@ -51,19 +52,12 @@ public class FlushThread extends Thread {
 
 			if (!messages.isEmpty()) {
 				final List<String> unmodifiableMessages = Collections.unmodifiableList(messages);
-				final ExecutorService executor = Executors.newFixedThreadPool(backendsSize);
 
 				for (Backend backend : backends) {
 					log.info("Notifying backend: " + backend.getClass().getSimpleName());
 
 					final Runnable backendWorker = new BackendWorker(backend, unmodifiableMessages);
 					executor.execute(backendWorker);
-				}
-
-				executor.shutdown();
-
-				while (!executor.isTerminated()) {
-					// No op
 				}
 
 				log.info("Finished backend threads");

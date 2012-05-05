@@ -19,13 +19,13 @@ public class StatsdTestClient {
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		StatsdClient statsdClient = new StatsdClient("192.168.1.21", 2003);
+		StatsdClient statsdClient = new StatsdClient("127.0.0.1", 39390);
 
 		while (true) {
 			String message = "system.loadavg_1min 0.60 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_5min 0.80 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_15min 0.50 " + System.currentTimeMillis() / 1000L + "\n";
 
 			for (int i = 0; i < 1; i++) {
-				statsdClient.send(message);
+				statsdClient.sendUdp(message);
 //				new Automatic().start();
 			}
 
