@@ -9,10 +9,12 @@ public class StatsdServer {
 
 	private static LinkedBlockingQueue<String> linkedBlockingQueue = new LinkedBlockingQueue<String>();;
 
+
 	public static void main(String[] args) throws IOException {
 		final StatsdConfiguration configuration = new StatsdConfiguration(args);
 
-		new ServerThread(configuration, linkedBlockingQueue).start();
+		ServerThread serverThread = ServerFactory.getInstance(configuration.getNetworkFramework(), configuration, linkedBlockingQueue);
+		serverThread.start();
 		new FlushThread(configuration, linkedBlockingQueue).start();
 	}
 }

@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class StatsdServerHandler extends IoHandlerAdapter {
+public class ServerHandlerMina extends IoHandlerAdapter {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	private final LinkedBlockingQueue<String> linkedBlockingQueue;
 
 
-	public StatsdServerHandler(LinkedBlockingQueue<String> linkedBlockingQueue) {
+	public ServerHandlerMina(LinkedBlockingQueue<String> linkedBlockingQueue) {
 		this.linkedBlockingQueue = linkedBlockingQueue;
 	}
 

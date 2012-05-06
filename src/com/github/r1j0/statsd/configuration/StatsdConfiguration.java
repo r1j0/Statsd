@@ -27,6 +27,7 @@ public class StatsdConfiguration {
 	private static final String SERVER_LISTEN_PORT = "server.listen_port";
 	private static final String SERVER_FLUSH_INTERVAL = "server.flush_interval";
 	private static final String BACKEND_USE = "backend.use";
+	private static final String NETWORK_FRAMEWORK = "server.framework";
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -73,6 +74,11 @@ public class StatsdConfiguration {
 
 	public List<Backend> getBackends() {
 		return backends;
+	}
+
+
+	public String getNetworkFramework() {
+		return getValue(NETWORK_FRAMEWORK);
 	}
 
 

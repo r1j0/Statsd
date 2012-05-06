@@ -1,8 +1,11 @@
 server.debug = false
 server.listen_port=39390
 
-# flush interval in milliseconds
+# Flush interval in milliseconds
 server.flush_interval=5000
+
+# Network framework to use (netty or mina)
+server.framework=netty
 
 backend.use = mysql, graphite
 
