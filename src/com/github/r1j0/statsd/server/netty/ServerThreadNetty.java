@@ -1,4 +1,4 @@
-package com.github.r1j0.statsd.server;
+package com.github.r1j0.statsd.server.netty;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.configuration.StatsdConfiguration;
+import com.github.r1j0.statsd.server.ServerThread;
 
 public class ServerThreadNetty extends Thread implements ServerThread {
 

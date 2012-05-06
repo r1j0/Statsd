@@ -1,4 +1,4 @@
-package com.github.r1j0.statsd.server;
+package com.github.r1j0.statsd.server.mina;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.github.r1j0.statsd.configuration.StatsdConfiguration;
+import com.github.r1j0.statsd.server.ServerThread;
 
 public class ServerThreadMina extends Thread implements ServerThread {
 
