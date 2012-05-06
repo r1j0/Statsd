@@ -8,7 +8,7 @@ public class BackendWorker implements Runnable {
 	private final List<String> messages;
 
 
-	public BackendWorker(Backend backend, List<String> messages) {
+	public BackendWorker(final Backend backend, final List<String> messages) {
 		this.backend = backend;
 		this.messages = messages;
 	}
