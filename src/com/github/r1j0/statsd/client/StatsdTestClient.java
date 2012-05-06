@@ -25,7 +25,7 @@ public class StatsdTestClient {
 			String message = "system.loadavg_1min 0.60 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_5min 0.80 " + System.currentTimeMillis() / 1000L + "\nsystem.loadavg_15min 0.50 " + System.currentTimeMillis() / 1000L + "\n";
 
 			for (int i = 0; i < 10; i++) {
-				statsdClient.sendUdp(message);
+				statsdClient.send(message);
 				new Automatic().start();
 			}
 

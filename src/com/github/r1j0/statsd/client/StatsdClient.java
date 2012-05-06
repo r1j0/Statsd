@@ -78,6 +78,24 @@ public class StatsdClient {
 
 
 	public boolean send(final String message) {
+		return send(message, true);
+	}
+
+
+	public boolean send(final String message, final boolean useUdp) {
+		boolean result = false;
+
+		if (useUdp) {
+			result = sendUdp(message);
+		} else {
+			result = sendSocket(message);
+		}
+
+		return result;
+	}
+
+
+	private boolean sendSocket(final String message) {
 		try {
 			Socket socket = new Socket(host, port);
 			Writer writer = new OutputStreamWriter(socket.getOutputStream());
@@ -94,7 +112,7 @@ public class StatsdClient {
 	}
 
 
-	public boolean sendUdp(final String message) {
+	private boolean sendUdp(final String message) {
 		final DatagramChannel channel;
 
 		try {
