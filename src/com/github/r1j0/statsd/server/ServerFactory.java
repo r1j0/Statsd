@@ -3,8 +3,8 @@ package com.github.r1j0.statsd.server;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import com.github.r1j0.statsd.configuration.StatsdConfiguration;
-import com.github.r1j0.statsd.server.mina.ServerThreadMina;
-import com.github.r1j0.statsd.server.netty.ServerThreadNetty;
+import com.github.r1j0.statsd.server.framework.ServerThreadMina;
+import com.github.r1j0.statsd.server.framework.ServerThreadNetty;
 
 public class ServerFactory {
 

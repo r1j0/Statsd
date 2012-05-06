@@ -1,4 +1,4 @@
-package com.github.r1j0.statsd.server.netty;
+package com.github.r1j0.statsd.server.framework;
 
 import java.util.concurrent.LinkedBlockingQueue;
 
