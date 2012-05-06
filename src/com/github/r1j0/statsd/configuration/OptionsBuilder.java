@@ -1,4 +1,4 @@
-package com.github.r1j0.statsd.server;
+package com.github.r1j0.statsd.configuration;
 
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
