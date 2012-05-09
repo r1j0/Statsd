@@ -122,24 +122,25 @@ public class StatsdConfiguration {
 
 	private void initializeBackends() {
 		String[] backendsToUse = properties.getProperty(BACKEND_USE).split(",");
-
-		Map<String, String> backendTypes = new HashMap<String, String>();
-		Set<Entry<Object, Object>> entrySet = properties.entrySet();
-
-		for (Entry<Object, Object> entry : entrySet) {
-			final String key = (String) entry.getKey();
-
-			if (!key.equals(BACKEND_USE) && key.matches("backend.*")) {
-				String identifier = key.substring(key.indexOf('.') + 1, key.lastIndexOf('.')).trim().toLowerCase();
-
-				if (key.endsWith("type")) {
-					backendTypes.put(identifier, getValue("backend." + identifier + ".type"));
-				}
-			}
-		}
+		final Map<String, String> backendTypes = new HashMap<String, String>();
 
 		if (isDebugEnabled()) {
 			backendsToUse = new String[] { "debug" };
+			backendTypes.put("debug", "debug");
+		} else {
+			Set<Entry<Object, Object>> entrySet = properties.entrySet();
+
+			for (Entry<Object, Object> entry : entrySet) {
+				final String key = (String) entry.getKey();
+
+				if (!key.equals(BACKEND_USE) && key.matches("backend.*")) {
+					String identifier = key.substring(key.indexOf('.') + 1, key.lastIndexOf('.')).trim().toLowerCase();
+
+					if (key.endsWith("type")) {
+						backendTypes.put(identifier, getValue("backend." + identifier + ".type"));
+					}
+				}
+			}
 		}
 
 		for (String backendToUse : backendsToUse) {
