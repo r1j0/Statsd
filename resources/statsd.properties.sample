@@ -7,12 +7,14 @@ server.flush_interval=5000
 # Network framework to use (netty or mina)
 server.framework=netty
 
-backend.use = mysql, graphite
+backend.use = statistic, database
 
-backend.mysql.host = 192.168.1.10
-backend.mysql.port = 3128
-backend.mysql.user = root
-backend.mysql.password = none
+backend.database.type = mysql
+backend.database.host = 192.168.1.10
+backend.database.port = 3128
+backend.database.user = root
+backend.database.password = none
 
-backend.graphite.host = 192.168.1.10
-backend.graphite.port = 12345
+backend.statistic.type = graphite
+backend.statistic.host = 192.168.1.10
+backend.statistic.port = 12345

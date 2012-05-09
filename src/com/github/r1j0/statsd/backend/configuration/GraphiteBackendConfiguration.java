@@ -5,18 +5,21 @@ import com.github.r1j0.statsd.configuration.StatsdConfiguration;
 
 public class GraphiteBackendConfiguration implements BackendConfiguration {
 
+	private static final String BACKEND_PREFIX = "backend";
+	private static final String HOST = "host";
+	private static final String PORT = "port";
+
 	private StatsdConfiguration configuration;
-	private static final String HOST = "backend.graphite.host";
-	private static final String PORT = "backend.graphite.port";
+	private String backendIdentifier;
 
 
 	public String getHost() {
-		return configuration.getValue(HOST);
+		return configuration.getValue(BACKEND_PREFIX + "." + backendIdentifier + "." + HOST);
 	}
 
 
 	public int getPort() {
-		return Integer.parseInt(configuration.getValue(PORT));
+		return Integer.parseInt(configuration.getValue(BACKEND_PREFIX + "." + backendIdentifier + "." + PORT));
 	}
 
 
@@ -24,4 +27,9 @@ public class GraphiteBackendConfiguration implements BackendConfiguration {
 		this.configuration = configuration;
 	}
 
+
+	public void setIdentifier(String backendIdentifier) {
+		this.backendIdentifier = backendIdentifier;
+
+	}
 }

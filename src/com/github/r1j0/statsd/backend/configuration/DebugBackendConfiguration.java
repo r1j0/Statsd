@@ -9,4 +9,7 @@ public class DebugBackendConfiguration implements BackendConfiguration {
 		// NoOp
 	}
 
+	public void setIdentifier(String backendIdentifier) {
+		// NoOp
+	}
 }

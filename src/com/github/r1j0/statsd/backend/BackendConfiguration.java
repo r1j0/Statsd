@@ -6,4 +6,7 @@ public interface BackendConfiguration {
 
 	void setConfiguration(StatsdConfiguration configuration);
 
+
+	void setIdentifier(String backendIdentifier);
+
 }

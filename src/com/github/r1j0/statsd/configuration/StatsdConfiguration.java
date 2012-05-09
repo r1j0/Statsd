@@ -4,8 +4,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -119,21 +123,44 @@ public class StatsdConfiguration {
 	private void initializeBackends() {
 		String[] backendsToUse = properties.getProperty(BACKEND_USE).split(",");
 
+		Map<String, String> backendTypes = new HashMap<String, String>();
+		Set<Entry<Object, Object>> entrySet = properties.entrySet();
+
+		for (Entry<Object, Object> entry : entrySet) {
+			final String key = (String) entry.getKey();
+
+			if (!key.equals(BACKEND_USE) && key.matches("backend.*")) {
+				String identifier = key.substring(key.indexOf('.') + 1, key.lastIndexOf('.')).trim().toLowerCase();
+
+				if (key.endsWith("type")) {
+					backendTypes.put(identifier, getValue("backend." + identifier + ".type"));
+				}
+			}
+		}
+
 		if (isDebugEnabled()) {
 			backendsToUse = new String[] { "debug" };
 		}
 
 		for (String backendToUse : backendsToUse) {
-			try {
-				Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendToUse.trim().toLowerCase()) + "Backend").newInstance();
-				BackendConfiguration configuration = backend.getConfiguration();
-				configuration.setConfiguration(this);
-				backends.add(backend);
+			final String backendIdentifier = backendToUse.trim();
+			final String backendType = backendTypes.get(backendIdentifier);
 
-				log.info("Added backend: " + backend.getClass().getSimpleName() + ".");
-			} catch (Exception e) {
-				e.printStackTrace();
-				log.error(e.getMessage());
+			if (backendType != null) {
+				try {
+					Backend backend = (Backend) Class.forName("com.github.r1j0.statsd.backend." + StringUtils.capitalize(backendType) + "Backend").newInstance();
+					BackendConfiguration configuration = backend.getConfiguration();
+					configuration.setIdentifier(backendIdentifier);
+					configuration.setConfiguration(this);
+					backends.add(backend);
+
+					log.info("Added backend: " + backendIdentifier + " as type " + backend.getClass().getSimpleName() + ".");
+				} catch (Exception e) {
+					e.printStackTrace();
+					log.error(e.getMessage());
+				}
+			} else {
+				log.error("Could not find a type for backend identifier: " + backendToUse);
 			}
 		}
 	}
