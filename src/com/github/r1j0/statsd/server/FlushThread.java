@@ -19,53 +19,91 @@ public class FlushThread extends Thread {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
+	private StatsdConfiguration configuration;
 	private final LinkedBlockingQueue<String> queue;
-	private final List<Backend> backends;
-	private final int flushInterval;
+	private List<Backend> backends;
+	private int flushInterval;
+	private ExecutorService executor;
 
 
 	public FlushThread(StatsdConfiguration configuration, LinkedBlockingQueue<String> linkedBlockingQueue) {
 		super();
 
-		queue = linkedBlockingQueue;
-		backends = configuration.getBackends();
-		flushInterval = configuration.getFlushInterval();
+		this.configuration = configuration;
+		this.queue = linkedBlockingQueue;
+		this.backends = configuration.getBackends();
+		this.flushInterval = configuration.getFlushInterval();
 	}
 
 
 	@Override
 	public void run() {
 		log.info("FlushThread started.");
-		List<String> messages = new ArrayList<String>();
+
 		final int backendsSize = backends.size();
-		final ExecutorService executor = Executors.newFixedThreadPool(backendsSize);
+		executor = Executors.newFixedThreadPool(backendsSize);
 
 		while (true) {
-			messages.clear();
 			queueInformation();
 
-			String message = "";
-
-			while ((message = queue.poll()) != null) {
-				log.info("Message taken from the queue: " + message);
-				messages.add(message);
-			}
+			List<String> messages = pollQueue();
 
 			if (!messages.isEmpty()) {
-				final List<String> unmodifiableMessages = Collections.unmodifiableList(messages);
-
-				for (Backend backend : backends) {
-					log.info("Notifying backend: " + backend.getClass().getSimpleName());
-
-					final Runnable backendWorker = new BackendWorker(backend, unmodifiableMessages);
-					executor.execute(backendWorker);
-				}
-
-				log.info("Finished backend threads");
+				notifyBackends(executor, messages);
 			}
 
 			ThreadUtility.doSleep(flushInterval);
 		}
+	}
+
+
+	public void forceFlush(StatsdConfiguration statsdConfiguration) {
+		log.info("Forced flushing of messages.");
+
+		ExecutorService oldExecutor = executor;
+		executor = Executors.newFixedThreadPool(backends.size());
+
+		queueInformation();
+
+		List<String> messages = pollQueue();
+
+		if (!messages.isEmpty()) {
+			notifyBackends(oldExecutor, messages);
+		}
+
+		configuration = statsdConfiguration;
+		backends = configuration.getBackends();
+		flushInterval = configuration.getFlushInterval();
+		oldExecutor.shutdown();
+
+		log.info("Finished flushing.");
+	}
+
+
+	private List<String> pollQueue() {
+		final List<String> messages = new ArrayList<String>();
+		String message = "";
+
+		while ((message = queue.poll()) != null) {
+			log.info("Message taken from the queue: " + message);
+			messages.add(message);
+		}
+
+		return messages;
+	}
+
+
+	private void notifyBackends(ExecutorService executor, List<String> messages) {
+		final List<String> unmodifiableMessages = Collections.unmodifiableList(messages);
+
+		for (Backend backend : backends) {
+			log.info("Notifying backend: " + backend.getClass().getSimpleName());
+
+			final Runnable backendWorker = new BackendWorker(backend, unmodifiableMessages);
+			executor.execute(backendWorker);
+		}
+
+		log.info("Finished backend threads");
 	}
 
 

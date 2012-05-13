@@ -17,6 +17,7 @@ public class StatsdServer {
 
 	private static LinkedBlockingQueue<String> linkedBlockingQueue = new LinkedBlockingQueue<String>();;
 	private static StatsdConfiguration configuration = null;
+	private static FlushThread flushThread = null;
 
 
 	public static void main(String[] args) throws IOException {
@@ -27,12 +28,15 @@ public class StatsdServer {
 			public void handle(Signal signal) {
 				log.info("SIGHUP received. Reloading configuration.");
 				configuration = new StatsdConfiguration(null);
+				
+				flushThread.forceFlush(configuration);
 			}
 		});
 
 		ServerThread serverThread = ServerFactory.getInstance(configuration.getNetworkFramework(), configuration, linkedBlockingQueue);
 		serverThread.start();
-		new FlushThread(configuration, linkedBlockingQueue).start();
-
+		
+		flushThread = new FlushThread(configuration, linkedBlockingQueue);
+		flushThread.start();
 	}
 }
